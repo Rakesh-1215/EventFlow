@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "../api";
 
 const CreateEvent = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const CreateEvent = () => {
       // Clean up empty image so backend uses default
       if (!payload.image.trim()) delete payload.image;
 
-      const res = await axios.post("http://localhost:8080/api/events", payload);
+      const res = await axios.post(`${API_BASE_URL}/api/events`, payload);
 
       toast.success("Event created successfully! 🎉");
       navigate(`/events/${res.data._id}`);

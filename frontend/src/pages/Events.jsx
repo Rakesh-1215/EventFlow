@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "../api";
 
 const Events = () => {
   const [events, setEvents] = useState([]);
@@ -10,7 +11,7 @@ const Events = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/events"); // ✅ FIXED
+        const res = await axios.get(`${API_BASE_URL}/api/events`); // ✅ FIXED
         console.log(res.data); // DEBUG
         setEvents(res.data);
       } catch (err) {
@@ -78,3 +79,5 @@ const Events = () => {
 };
 
 export default Events;
+
+

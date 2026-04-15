@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "../api";
 
 const ValidateTicket = () => {
   const [ticketCode, setTicketCode] = useState("");
@@ -10,10 +11,9 @@ const ValidateTicket = () => {
     e.preventDefault();
     setValidatedData(null);
     try {
-      const res = await axios.post(
-        "http://localhost:8080/api/tickets/validate",
-        { ticketCode },
-      );
+      const res = await axios.post(`${API_BASE_URL}/api/tickets/validate`, {
+        ticketCode,
+      });
       setValidatedData(res.data.ticket);
       toast.success(res.data.message);
       setTicketCode("");

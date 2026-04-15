@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../api";
 
 const MyTickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -9,9 +10,7 @@ const MyTickets = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:8080/api/tickets/my-tickets",
-        );
+        const res = await axios.get(`${API_BASE_URL}/api/tickets/my-tickets`);
         setTickets(res.data);
       } catch (err) {
         toast.error("Failed to load your tickets");

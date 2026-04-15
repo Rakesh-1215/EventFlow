@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -12,17 +13,42 @@ const { requireAuth, requireAdmin, JWT_SECRET } = require("./middleware/auth");
 
 const app = express();
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/eventApp";
+const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/eventApp";
+const PORT = process.env.PORT || 8080;
+const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
-  console.log("connected to db");
+  await mongoose.connect(MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  console.log("Connected to database");
 }
 
-main().catch((err) => console.log(err));
+main().catch((err) => {
+  console.error("Database connection error:", err);
+  process.exit(1);
+});
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (
+        !origin ||
+        allowedOrigins.length === 0 ||
+        allowedOrigins.includes(origin)
+      ) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("CORS origin not allowed"));
+    },
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -299,6 +325,6 @@ app.post(
   },
 );
 
-app.listen(8080, () => {
-  console.log("Connect to port 8080 successfully");
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

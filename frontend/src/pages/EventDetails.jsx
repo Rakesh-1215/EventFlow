@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext";
+import { API_BASE_URL } from "../api";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const EventDetails = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/events/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/api/events/${id}`);
         setEvent(res.data);
       } catch (err) {
         toast.error("Failed to load event. Check if the ID is correct!");
@@ -45,7 +46,7 @@ const EventDetails = () => {
     setBookingError("");
 
     try {
-      await axios.post("http://localhost:8080/api/tickets/book", {
+      await axios.post(`${API_BASE_URL}/api/tickets/book`, {
         eventId: id,
         password,
       });
@@ -67,7 +68,7 @@ const EventDetails = () => {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this event?")) {
       try {
-        await axios.delete(`http://localhost:8080/api/events/${id}`);
+        await axios.delete(`${API_BASE_URL}/api/events/${id}`);
         toast.success("Event deleted");
         navigate("/");
       } catch (err) {

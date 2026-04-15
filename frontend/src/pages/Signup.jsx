@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext";
+import { API_BASE_URL } from "../api";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
@@ -15,7 +16,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/api/auth/register", {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/register`, {
         username,
         email,
         password,
