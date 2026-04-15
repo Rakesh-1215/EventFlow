@@ -21,10 +21,7 @@ const allowedOrigins = (process.env.CLIENT_URLS || process.env.CLIENT_URL || "")
   .filter(Boolean);
 
 async function main() {
-  await mongoose.connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(MONGO_URL);
   console.log("Connected to database");
 }
 
