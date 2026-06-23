@@ -199,12 +199,21 @@ const EventDetails = () => {
               )}
 
               {user && user.role === "admin" && event.createdBy === user.id && (
-                <button
-                  className="bg-red-50 text-red-600 px-6 py-3 rounded-xl! font-bold hover:bg-red-600 hover:text-white transition border border-red-100"
-                  onClick={handleDelete}
-                >
-                  Delete Event
-                </button>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => navigate(`/events/${id}/edit`)}
+                    className="bg-emerald-50 text-emerald-700 px-6 py-3 rounded-xl! font-bold hover:bg-emerald-600 hover:text-white transition border border-emerald-100 active:scale-95"
+                  >
+                    <i className="fas fa-edit mr-2"></i> Edit Event
+                  </button>
+                  <button
+                    className="bg-red-50 text-red-600 px-6 py-3 rounded-xl! font-bold hover:bg-red-600 hover:text-white transition border border-red-100"
+                    onClick={handleDelete}
+                  >
+                    Delete Event
+                  </button>
+                </div>
               )}
             </div>
           </div>

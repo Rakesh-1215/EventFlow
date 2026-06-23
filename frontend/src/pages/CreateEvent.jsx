@@ -7,6 +7,7 @@ import { API_BASE_URL } from "../api";
 const CreateEvent = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({}); //for error handling
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -21,28 +22,40 @@ const CreateEvent = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  //errors validations
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.title.trim()) newErrors.title = "Event title is required";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required";
+    if (!formData.price || Number(formData.price) < 0)
+      newErrors.price = "Valid price is required";
+    if (!formData.location.trim()) newErrors.location = "Location is required";
+    if (!formData.country.trim()) newErrors.country = "Country is required";
+    if (!formData.date) newErrors.date = "Event date is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (!validateForm()) return; // Stop if errors exist
 
+    setLoading(true);
     try {
       const payload = {
         ...formData,
         price: Number(formData.price),
       };
-
-      // Clean up empty image so backend uses default
       if (!payload.image.trim()) delete payload.image;
 
       const res = await axios.post(`${API_BASE_URL}/api/events`, payload);
-
       toast.success("Event created successfully! 🎉");
       navigate(`/events/${res.data._id}`);
     } catch (err) {
-      const errorMsg =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Error creating event";
+      const errorMsg = err.response?.data?.message || "Error creating event";
       toast.error(errorMsg);
     } finally {
       setLoading(false);
@@ -66,7 +79,7 @@ const CreateEvent = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-8 rounded-xl shadow-lg border border-gray-100"
+          className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 "
         >
           {/* Title */}
           <div className="mb-5">
@@ -77,11 +90,13 @@ const CreateEvent = () => {
               type="text"
               name="title"
               placeholder="e.g. Summer Music Festival"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 transition`}
               value={formData.title}
               onChange={handleChange}
-              required
             />
+            {errors.title && (
+              <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+            )}
           </div>
 
           {/* Description */}
@@ -96,8 +111,10 @@ const CreateEvent = () => {
               rows="4"
               value={formData.description}
               onChange={handleChange}
-              required
             ></textarea>
+            {errors.description && (
+                <p className="mt-1 text-sm text-red-600">{errors.description}</p>
+              )}
           </div>
 
           {/* Image URL & Preview */}
@@ -141,11 +158,13 @@ const CreateEvent = () => {
                 name="price"
                 min="0"
                 placeholder="0"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 transition`}
                 value={formData.price}
                 onChange={handleChange}
-                required
               />
+              {errors.price && (
+                <p className="mt-1 text-sm text-red-600">{errors.price}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -158,8 +177,10 @@ const CreateEvent = () => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                 value={formData.location}
                 onChange={handleChange}
-                required
               />
+              {errors.location && (
+                <p className="mt-1 text-sm text-red-600">{errors.location}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -172,8 +193,9 @@ const CreateEvent = () => {
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                 value={formData.country}
                 onChange={handleChange}
-                required
-              />
+              />{errors.country && (
+                <p className="mt-1 text-sm text-red-600">{errors.country}</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -182,11 +204,13 @@ const CreateEvent = () => {
               <input
                 type="date"
                 name="date"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 transition`}
                 value={formData.date}
                 onChange={handleChange}
-                required
               />
+              {errors.date && (
+                <p className="mt-1 text-sm text-red-600">{errors.date}</p>
+              )}
             </div>
           </div>
 
