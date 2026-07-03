@@ -12,6 +12,7 @@ const Event = require("./module/event");
 const User = require("./module/user");
 const Ticket = require("./module/ticket");
 const Contact = require("./module/contact");
+const Review = require("./module/review");
 const { requireAuth, requireAdmin, JWT_SECRET } = require("./middleware/auth");
 
 const app = express();
@@ -131,6 +132,7 @@ app.get("/api/events", wrapAsync(async (req, res) => {
   res.json(allEvents);
 }));
 
+
 // Get single event
 app.get("/api/events/:id", wrapAsync(async (req, res) => {
   const event = await Event.findById(req.params.id);
@@ -196,6 +198,41 @@ app.delete("/api/events/:id", requireAuth, requireAdmin, wrapAsync(async (req, r
 
   await Event.findByIdAndDelete(req.params.id);
   res.json({ message: "Event deleted successfully" });
+}));
+
+// --- Comment ROUTES ---
+
+app.post("/api/comments", requireAuth, wrapAsync(async (req, res) => {
+
+    const { eventId, rating, comment } = req.body;
+
+    const event = await Event.findById(eventId);
+
+    if (!event) {
+        return res.status(404).json({
+            error: "Event not found"
+        });
+    }
+
+    // Create Review
+    const review = new Review({
+        rating,
+        comment,
+    });
+
+    // Save Review
+    await review.save();
+
+    // Store review id inside event
+    event.reviews.push(review._id);
+
+    // Save Event
+    await event.save();
+
+    res.status(201).json({
+        message: "Comment saved successfully"
+    });
+
 }));
 
 // --- TICKET ROUTES ---
@@ -287,8 +324,10 @@ app.use("/api/",(req,res,next)=>{
 });
 
 
-app.use((err,req,res,next) =>{
-  let {statusCode , message} = err;
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Something went wrong";
+
   res.status(statusCode).send(message);
 }); 
 

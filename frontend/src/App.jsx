@@ -47,6 +47,7 @@ function App() {
               <Route path="/events" element={<Events />} />
               <Route path="/events/:id" element={<EventDetails />} />
               <Route path="/admin/events/new" element={<CreateEvent />} />
+              
               <Route path="/admin/validate" element={<ValidateTicket />} />
               <Route path="/my-tickets" element={<MyTickets />} />
               <Route path="/events/:id/edit" element={<EditEvent />} />

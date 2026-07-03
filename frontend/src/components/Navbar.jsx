@@ -24,7 +24,7 @@ const Navbar = () => {
     } md:w-auto w-full text-center`;
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-3">
+    <nav className="sticky top-0 z-50 w-full bg-white border-b border-gray-300 px-6 py-3">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* 🔹 Logo Section */}
         <Link to="/" className="flex items-center gap-2 group">

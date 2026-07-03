@@ -52,7 +52,7 @@ const CreateEvent = () => {
       if (!payload.image.trim()) delete payload.image;
 
       const res = await axios.post(`${API_BASE_URL}/api/events`, payload);
-      toast.success("Event created successfully! 🎉");
+      toast.success("Event created successfully!");
       navigate(`/events/${res.data._id}`);
     } catch (err) {
       const errorMsg = err.response?.data?.message || "Error creating event";

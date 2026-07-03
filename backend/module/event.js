@@ -21,10 +21,16 @@ const eventSchema = new schema({
   location: String,
   country: String,
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId, 
     ref: "User",
     required: true,
   },
+  reviews : [
+    {
+      type: schema.Types.ObjectId,
+      ref : "Review",
+    },
+  ],
 });
 
 const Event = mongoose.model("Event", eventSchema);
