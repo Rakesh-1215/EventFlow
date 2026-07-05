@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-// const {listingSchema} = require("/schema.js")
 
 const Event = require("./module/event");
 const User = require("./module/user");
@@ -135,7 +134,7 @@ app.get("/api/events", wrapAsync(async (req, res) => {
 
 // Get single event
 app.get("/api/events/:id", wrapAsync(async (req, res) => {
-  const event = await Event.findById(req.params.id);
+  const event = await Event.findById(req.params.id).populate("reviews");
   if (!event) return res.status(404).json({ error: "Event not found" });
   res.json(event);
 }));

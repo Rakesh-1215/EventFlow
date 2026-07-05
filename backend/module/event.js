@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Review = require("./review");
 
 const schema = mongoose.Schema;
 
@@ -32,6 +33,14 @@ const eventSchema = new schema({
     },
   ],
 });
+
+
+eventSchema.post("findOneAndDelete", async function (event) {
+  if (event) {
+    await  Review.deleteMany({_id:{ $in: event.reviews } });
+  }
+});
+
 
 const Event = mongoose.model("Event", eventSchema);
 module.exports = Event;

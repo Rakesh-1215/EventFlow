@@ -23,15 +23,16 @@ const EventDetails = () => {
 
   const navigate = useNavigate();
 
+  const fetchEvent = async () => {
+    try {
+      const res = await axios.get(`${API_BASE_URL}/api/events/${id}`);
+      setEvent(res.data);
+    } catch (err) {
+      toast.error("Failed to load event. Check if the ID is correct!");
+    }
+  };
+
   useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const res = await axios.get(`${API_BASE_URL}/api/events/${id}`);
-        setEvent(res.data);
-      } catch (err) {
-        toast.error("Failed to load event. Check if the ID is correct!");
-      }
-    };
     fetchEvent();
   }, [id]);
 
@@ -104,6 +105,7 @@ const EventDetails = () => {
       setTimeout(() => setError(null), 3000);
     } finally {
       setIsLoading(false);
+      await fetchEvent();
     }
   };
 
@@ -307,15 +309,11 @@ const EventDetails = () => {
           {/* Status Messages */}
           {success && (
             <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg border border-green-200">
-              ✓ Comment submitted successfully!
+              Comment submitted successfully!
             </div>
           )}
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg border border-red-200">
-              ✗ {error}
-            </div>
-          )}
+
 
           <form className="space-y-6" onSubmit={handleSubmitComment}>
             {/* Rating Section */}
@@ -370,12 +368,21 @@ const EventDetails = () => {
               <div className="mt-1 text-xs text-gray-500 text-right">
                 {comment.length}/500
               </div>
+
+              {error && (
+                <div className="text-red-700">
+                  {error}
+                </div>
+              )}
+
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-end space-x-3">
+            <div className="flex justify-end gap-3">
               <button
                 type="reset"
+                // Add mr-4 here directly
+                className="mr-4 px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 !rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors disabled:opacity-50"
                 onClick={() => {
                   setComment('');
                   setRating(5);
@@ -383,14 +390,13 @@ const EventDetails = () => {
                   setSuccess(false);
                 }}
                 disabled={isLoading}
-                className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-6 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors shadow-sm disabled:opacity-50 flex items-center"
+                className="px-6 py-2 text-sm font-medium text-white bg-blue-600 !rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors shadow-sm disabled:opacity-50 flex items-center"
               >
                 {isLoading ? (
                   <>
@@ -406,6 +412,36 @@ const EventDetails = () => {
               </button>
             </div>
           </form>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Comments</h2>
+          <div className="mb-6">
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+              {event.reviews.length === 0 ? (
+                <p>No comments yet.</p>
+              ) : (
+                event.reviews.map((review) => (
+                  <div
+                    key={review._id}
+                    className="border rounded-lg p-4 mb-4"
+                  >
+                    <p className="font-semibold">
+                      Rating: ⭐ {review.rating}/5
+                    </p>
+
+                    <p className="break-words whitespace-pre-wrap text-gray-700">
+                      {review.comment}
+                    </p>
+
+                    <small>
+                      {new Date(review.createdAt).toLocaleDateString()}
+                    </small>
+                  </div>
+                ))
+              )}
+            </h1>
+          </div>
         </div>
       </div>
     </div>
