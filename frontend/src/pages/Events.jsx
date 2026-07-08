@@ -12,7 +12,7 @@ const Events = () => {
     const fetchEvents = async () => {
       try {
         const res = await axios.get(`${API_BASE_URL}/api/events`); // ✅ FIXED
-        console.log(res.data); // DEBUG
+        // console.log(res.data); 
         setEvents(res.data);
       } catch (err) {
         console.log(err);
